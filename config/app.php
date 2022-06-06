@@ -185,6 +185,7 @@ return [
         /*
          * Package Service Providers...
          */
+        App\Providers\RiotAPIServiceProvider::class,
 
         /*
          * Application Service Providers...
@@ -211,5 +212,6 @@ return [
     'aliases' => Facade::defaultAliases()->merge([
         // 'ExampleClass' => App\Example\ExampleClass::class,
     ])->toArray(),
+    'RiotAPI' => App\Facades\RiotAPI::class,
 
 ];

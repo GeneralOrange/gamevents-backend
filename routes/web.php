@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use RiotAPI\LeagueAPI\LeagueAPI;
+use RiotAPI\Base\Definitions\Region;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,6 +17,10 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
+});
+
+Route::get('/leaderboard', function () {
+    return view('leaderboard');
 });
 
 Route::get('/dashboard', function () {

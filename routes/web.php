@@ -1,8 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use RiotAPI\LeagueAPI\LeagueAPI;
-use RiotAPI\Base\Definitions\Region;
+use RiotAPI\RiotAPI;
 
 /*
 |--------------------------------------------------------------------------
@@ -20,6 +19,9 @@ Route::get('/', function () {
 });
 
 Route::get('/leaderboard', function () {
+    // $api = new RiotAPI;
+    // $summoner = $api->getSummonerByName('General Orange');
+    
     return view('leaderboard');
 });
 

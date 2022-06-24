@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use RiotAPI\RiotAPI;
+//use RiotAPI\BaseAPI;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,8 +19,12 @@ Route::get('/', function () {
 });
 
 Route::get('/leaderboard', function () {
-    // $api = new RiotAPI;
+    //dd(new BaseAPI);
+    //$api = new RiotAPI;
     // $summoner = $api->getSummonerByName('General Orange');
+    //RiotApi::getSummonerByName('General Orange');
+    $api = app()->make('RiotApi');
+    dd($api);
     
     return view('leaderboard');
 });

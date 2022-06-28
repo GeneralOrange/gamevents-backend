@@ -1,7 +1,9 @@
 <?php
 
+use App\Http\Controllers\SummonerController;
 use Illuminate\Support\Facades\Route;
-//use RiotAPI\BaseAPI;
+use App\Http\Controllers\UserController;
+use App\Models\Summoner;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,18 +17,26 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
-});
-
-Route::get('/leaderboard', function () {
     //dd(new BaseAPI);
     //$api = new RiotAPI;
     // $summoner = $api->getSummonerByName('General Orange');
     //RiotApi::getSummonerByName('General Orange');
+    $summoners = Summoner::all();
     $api = app()->make('RiotApi');
-    dd($api);
     
-    return view('leaderboard');
+    return view('leaderboard', [
+        'api' => $api,
+        'summoners' => $summoners
+    ]);
+});
+
+Route::get('/user/{id}', [UserController::class, 'show']);
+
+//Route::get('/summoner/{summoner:slug}', [SummonerController::class, 'show']);
+Route::get('/summoner/{summoner:slug}', function(Summoner $summoner){
+    return view('summoner.profile', [
+        'summoner' => $summoner
+    ]); 
 });
 
 Route::get('/dashboard', function () {

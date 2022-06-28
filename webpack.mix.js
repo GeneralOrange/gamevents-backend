@@ -15,3 +15,14 @@ mix.js('resources/js/app.js', 'public/js').postCss('resources/css/app.css', 'pub
     require('tailwindcss'),
     require('autoprefixer'),
 ]);
+
+mix.browserSync({
+    proxy: 'gamevents-backend.test',
+    host: 'localhost',
+    files: [
+        'resources/views/*.blade.php',
+        'resources/views/**/*.blade.php',
+    ]
+});
+
+mix.disableNotifications()

@@ -21,12 +21,11 @@ Route::get('/', function () {
     //$api = new RiotAPI;
     // $summoner = $api->getSummonerByName('General Orange');
     //RiotApi::getSummonerByName('General Orange');
-    $summoners = Summoner::all();
     $api = app()->make('RiotApi');
     
     return view('leaderboard', [
         'api' => $api,
-        'summoners' => $summoners
+        'summoners' => Summoner::with('user')->get()
     ]);
 });
 

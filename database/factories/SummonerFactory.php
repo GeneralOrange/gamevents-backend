@@ -19,8 +19,8 @@ class SummonerFactory extends Factory
     {
         return [
             'user_id' => User::factory(),
-            'name' => $this->faker->name,
-            'slug' => $this->faker->slug,
+            'name' => $this->faker->name(),
+            'slug' => $this->faker->slug(),
             'riot_uuid' => $this->faker->regexify('[A-Za-z0-9]{20}')
         ];
     }

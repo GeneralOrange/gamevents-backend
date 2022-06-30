@@ -17,6 +17,7 @@
         <script src="{{ asset('js/app.js') }}" defer></script>
     </head>
     <body>
+        @include('layouts.navigation-guest');
         <div class="font-sans text-gray-900 antialiased flex flex-col items-center justify-center w-full p-7">
             {{ $slot }}
         </div>

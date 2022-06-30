@@ -17,9 +17,9 @@ use App\Http\Controllers\UserController;
 
 Route::get('/', [SummonerController::class, 'index'])->name('home');
 
-Route::get('/user/{id}', [UserController::class, 'show'])->name('userShow');
-
-Route::get('/summoner/{summoner:slug}', [SummonerController::class, 'show'])->name('summonerShow');
+Route::get('/summoner/{summoner:slug}', [SummonerController::class, 'show'])
+    ->middleware(['auth'])
+    ->name('summoner.show');
 
 Route::get('/dashboard', function () {
     return view('dashboard');

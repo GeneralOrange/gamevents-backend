@@ -3,7 +3,6 @@
 use App\Http\Controllers\SummonerController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
-use App\Models\Summoner;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,27 +15,11 @@ use App\Models\Summoner;
 |
 */
 
-Route::get('/', function () {
-    //dd(new BaseAPI);
-    //$api = new RiotAPI;
-    // $summoner = $api->getSummonerByName('General Orange');
-    //RiotApi::getSummonerByName('General Orange');
-    $api = app()->make('RiotApi');
-    
-    return view('leaderboard', [
-        'api' => $api,
-        'summoners' => Summoner::with('user')->get()
-    ]);
-});
+Route::get('/', [SummonerController::class, 'index'])->name('home');
 
-Route::get('/user/{id}', [UserController::class, 'show']);
+Route::get('/user/{id}', [UserController::class, 'show'])->name('userShow');
 
-//Route::get('/summoner/{summoner:slug}', [SummonerController::class, 'show']);
-Route::get('/summoner/{summoner:slug}', function(Summoner $summoner){
-    return view('summoner.profile', [
-        'summoner' => $summoner
-    ]); 
-});
+Route::get('/summoner/{summoner:slug}', [SummonerController::class, 'show'])->name('summonerShow');
 
 Route::get('/dashboard', function () {
     return view('dashboard');

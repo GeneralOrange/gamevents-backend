@@ -15,12 +15,14 @@
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                         {{ __('Dashboard') }}
                     </x-nav-link>
-                    <x-nav-link 
-                        :href="route('summoner.show', ['summoner' => Auth::user()->summoner ])"
-                        :active="request()->routeIs('summoner.show')">
-                        {{ __('My Summoner') }}
-                    </x-nav-link>
                     
+                    @if (Auth::user()->summoner)
+                        <x-nav-link 
+                            :href="route('summoner.show', ['summoner' => Auth::user()->summoner ])"
+                            :active="request()->routeIs('summoner.show')">
+                            {{ __('My Summoner') }}
+                        </x-nav-link>                        
+                    @endif
                 </div>
             </div>
 

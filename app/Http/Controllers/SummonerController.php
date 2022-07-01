@@ -30,4 +30,29 @@ class SummonerController extends Controller
             'summoner' => $summoner
         ]);
     }
+
+    /**
+     * Handle an incoming registration request.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\RedirectResponse
+     *
+     * @throws \Illuminate\Validation\ValidationException
+     */
+    // public function store(Request $request)
+    // {
+    //     $request->validate([
+    //         'name' => ['required', 'string', 'max:255', 'unique:summoners']
+    //     ]);
+
+    //     $user = User::create([
+    //         'name' => $request->name,
+    //     ]);
+
+    //     event(new Registered($user));
+
+    //     Auth::login($user);
+
+    //     return redirect(RouteServiceProvider::HOME);
+    // }
 }

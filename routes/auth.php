@@ -33,9 +33,6 @@ Route::middleware('guest')->group(function () {
 
     Route::post('reset-password', [NewPasswordController::class, 'store'])
                 ->name('password.update');
-
-    Route::post('register-summoner', [SummonerController::class, 'store'])
-                ->name('summoner.register');
 });
 
 Route::middleware('auth')->group(function () {
@@ -57,4 +54,10 @@ Route::middleware('auth')->group(function () {
 
     Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])
                 ->name('logout');
+            
+    Route::post('get-summoner', [SummonerController::class, 'findInApi'])
+                ->name('summoner.find');
+
+    Route::post('register-summoner', [SummonerController::class, 'store'])
+                ->name('summoner.register');
 });

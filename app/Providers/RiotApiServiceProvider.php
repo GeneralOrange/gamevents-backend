@@ -8,10 +8,13 @@ namespace App\Providers;
 //namespace RiotAPI;
 
 use Illuminate\Support\ServiceProvider;
-use RiotAPI\LeagueAPI\LeagueAPI as LeagueAPILeagueAPI;
+use RiotAPI\LeagueAPI\LeagueAPI;
+use RiotAPI\Base\Definitions\Region;
 
 class RiotApiServiceProvider extends ServiceProvider
 {
+    //$RIOT_API_REGION = env('RIOT_API_REGION');
+
     /**
      * Register services.
      *
@@ -20,12 +23,10 @@ class RiotApiServiceProvider extends ServiceProvider
     public function register()
     {
         $this->app->bind('RiotApi', function ($app) {
-            $api = 'test';
-            // dd(new LeagueAPILeagueAPI);
-            // $api = new RiotAPI([
-            //     RiotAPI::SET_KEY            => env('RIOT_API_KEY'),
-            //     RiotAPI::SET_REGION         => env('RIOT_API_REGION'), // Replace it to $app->request->input('region');
-            // ]);
+            $api = new LeagueAPI([
+                LeagueAPI::SET_KEY            => env('RIOT_API_KEY'),
+                LeagueAPI::SET_REGION         => Region::EUROPE_WEST, // Replace it to $app->request->input('region')
+            ]);
 
             //dd(env('RIOT_API_KEY'));
 

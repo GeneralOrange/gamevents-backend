@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Summoner;
+use App\Facades\RiotApi;
 
 class SummonerController extends Controller
 {   
@@ -55,4 +56,17 @@ class SummonerController extends Controller
 
     //     return redirect(RouteServiceProvider::HOME);
     // }
+
+    /**
+     * Handle an incoming api request for summoner to riot api
+     */
+    public function findInApi(Request $request)
+    {
+        $request::validate([
+            'name' => ['required', 'string', 'max:255']
+        ]);
+
+        $api = RiotApi::getSummonerByName($request->name);
+        dd($api);
+    }
 }

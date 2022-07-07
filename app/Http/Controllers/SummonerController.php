@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Summoner;
 use App\Facades\RiotApi;
+use App\Providers\RouteServiceProvider;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Routing\Route;
 
 class SummonerController extends Controller
 {   
@@ -62,11 +65,21 @@ class SummonerController extends Controller
      */
     public function findInApi(Request $request)
     {
-        $request::validate([
-            'name' => ['required', 'string', 'max:255']
+        $request->validate([
+            'name' => ['required', 'max:255', 'unique:summoners,name']
         ]);
 
-        $api = RiotApi::getSummonerByName($request->name);
-        dd($api);
+        $user = Auth::user();
+
+        $summonerFetch = RiotApi::getSummonerByName($request->name);
+
+        Summoner::create([
+            'user_id' => $user->id,
+            'slug' => strtolower(str_replace(' ', '-', $summonerFetch->name)),
+            'name' => $summonerFetch->name,
+            'riot_uuid' => $summonerFetch->id
+        ]);
+    
+        return redirect(RouteServiceProvider::HOME)->with('success', 'You succesfully added your Summoner!');
     }
 }

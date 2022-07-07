@@ -613,6 +613,12 @@ select {
 .left-0 {
   left: 0px;
 }
+.bottom-3 {
+  bottom: 0.75rem;
+}
+.right-3 {
+  right: 0.75rem;
+}
 .z-0 {
   z-index: 0;
 }
@@ -914,6 +920,10 @@ select {
   --tw-bg-opacity: 1;
   background-color: rgb(31 41 55 / var(--tw-bg-opacity));
 }
+.bg-blue-500 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(59 130 246 / var(--tw-bg-opacity));
+}
 .fill-current {
   fill: currentColor;
 }
@@ -1100,6 +1110,10 @@ select {
 .text-gray-300 {
   --tw-text-opacity: 1;
   color: rgb(209 213 219 / var(--tw-text-opacity));
+}
+.text-red-500 {
+  --tw-text-opacity: 1;
+  color: rgb(239 68 68 / var(--tw-text-opacity));
 }
 .underline {
   -webkit-text-decoration-line: underline;

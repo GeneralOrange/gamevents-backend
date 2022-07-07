@@ -1,16 +1,25 @@
-<form method="POST" action="{{ route('summoner.find')}}">
-    @csrf
+@unless (Auth::user()->summoner)
+    <h3 class="font-semibold text-xl text-gray-800 leading-tight">
+        {{ __('Add your Summoner')}}
+    </h3>
+    <form method="POST" action="{{ route('summoner.find')}}">
+        @csrf
 
-    <!-- Summoner name -->
-    <div>
-        <x-label for="name" :value="__('Summoner name')" />
+        <!-- Summoner name -->
+        <div>
+            <x-label for="name" :value="__('Summoner name')" />
 
-        <x-input id="name" class="block mt-1 w-full" type="text" name="summoner-name" :value="old('name')" required autofocus />
-    </div>
+            <x-input id="name" class="block mt-1 w-full" type="text" name="name" :value="old('name')" required autofocus />
 
-    <div class="flex items-center justify-start mt-4">
-        <x-button>
-            {{ __('Search') }}
-        </x-button>
-    </div>
-</form>
+            @error('name')
+                <p class="text-red-500 text-xs mt-1">{{ $message }}</p>   
+            @enderror
+        </div>
+
+        <div class="flex items-center justify-start mt-4">
+            <x-button>
+                {{ __('Add summoner') }}
+            </x-button>
+        </div>
+    </form>
+@endunless

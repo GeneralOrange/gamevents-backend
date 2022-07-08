@@ -18,7 +18,9 @@ class Summoner extends Model
         'user_id',
         'slug',
         'name',
-        'riot_uuid',
+        'riot_puuid',
+        'riot_id',
+        'riot_account_id'
     ];
 
     public function user()

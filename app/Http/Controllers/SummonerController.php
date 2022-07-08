@@ -8,6 +8,7 @@ use App\Facades\RiotApi;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Routing\Route;
+use Illuminate\Support\Facades\Cache;
 
 class SummonerController extends Controller
 {   
@@ -30,35 +31,17 @@ class SummonerController extends Controller
      */
     public function show(Summoner $summoner)
     {
+        $summonerId = $summoner->id;
+
+        $matches = Cache::remember("summoner.{$summonerId}", now()->addMinutes(5), function() use($summoner){
+            return $this->getMatchList($summoner);
+        });
+
         return view('summoner.profile', [
-            'summoner' => $summoner
+            'summoner' => $summoner,
+            'matches' => $matches
         ]);
     }
-
-    /**
-     * Handle an incoming registration request.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\RedirectResponse
-     *
-     * @throws \Illuminate\Validation\ValidationException
-     */
-    // public function store(Request $request)
-    // {
-    //     $request->validate([
-    //         'name' => ['required', 'string', 'max:255', 'unique:summoners']
-    //     ]);
-
-    //     $user = User::create([
-    //         'name' => $request->name,
-    //     ]);
-
-    //     event(new Registered($user));
-
-    //     Auth::login($user);
-
-    //     return redirect(RouteServiceProvider::HOME);
-    // }
 
     /**
      * Handle an incoming api request for summoner to riot api
@@ -77,9 +60,45 @@ class SummonerController extends Controller
             'user_id' => $user->id,
             'slug' => strtolower(str_replace(' ', '-', $summonerFetch->name)),
             'name' => $summonerFetch->name,
-            'riot_uuid' => $summonerFetch->id
+            'riot_puuid' => $summonerFetch->puuid,
+            'riot_id' => $summonerFetch->id,
+            'riot_account_id' => $summonerFetch->accountId
         ]);
     
         return redirect(RouteServiceProvider::HOME)->with('success', 'You succesfully added your Summoner!');
+    }
+
+    /**
+     * Handle deleting a summoner
+     */
+    public function delete(Request $request)
+    {
+        $user = Auth::user();
+
+        Summoner::where('user_id', $user->id)->delete();
+
+        return redirect(RouteServiceProvider::HOME)->with('success', 'You succesfully deleted your Summoner!');
+    }
+
+    /**
+     * Fetch matchlist from RiotApi
+     */
+    public function getMatchList($summoner)
+    {
+        $matchList = $this->getMatchDetails(RiotApi::getMatchIdsByPUUID($summoner->riot_puuid));
+
+        return $matchList;
+    }
+
+
+    public function getMatchDetails($matchList)
+    {
+        $renderedMatches = array();
+
+        foreach($matchList as $matchId){
+            $renderedMatches[] = RiotApi::getMatch($matchId);
+        }
+
+        return $renderedMatches;
     }
 }

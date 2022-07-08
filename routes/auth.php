@@ -60,4 +60,7 @@ Route::middleware('auth')->group(function () {
 
     Route::post('register-summoner', [SummonerController::class, 'store'])
                 ->name('summoner.register');
+
+    Route::post('delete-summoner', [SummonerController::class, 'delete'])
+                ->name('summoner.delete');
 });

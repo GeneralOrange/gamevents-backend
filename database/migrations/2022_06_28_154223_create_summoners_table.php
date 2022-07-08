@@ -18,7 +18,9 @@ return new class extends Migration
             $table->foreignId('user_id');
             $table->string('slug')->unique();
             $table->string('name')->unique();
-            $table->string('riot_uuid')->unique();
+            $table->string('riot_puuid')->unique();
+            $table->string('riot_id')->unique();
+            $table->string('riot_account_id')->unique();
             $table->timestamps();
         });
     }

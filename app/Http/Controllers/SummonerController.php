@@ -7,7 +7,6 @@ use App\Models\Summoner;
 use App\Facades\RiotApi;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Routing\Route;
 use Illuminate\Support\Facades\Cache;
 
 class SummonerController extends Controller
@@ -26,25 +25,28 @@ class SummonerController extends Controller
     /**
      * Show the profile for a given summoner.
      * 
-     * @param string $summoner
+     * @param object $summoner
      * @return \Illuminate\View\View
      */
     public function show(Summoner $summoner)
     {
         $summonerId = $summoner->id;
 
-        $matches = Cache::remember("summoner.{$summonerId}", now()->addMinutes(5), function() use($summoner){
+        $matches = Cache::remember("summoner.{$summonerId}", now()->addMinutes(15), function() use($summoner){
             return $this->getMatchList($summoner);
         });
 
         return view('summoner.profile', [
             'summoner' => $summoner,
-            'matches' => $matches
+            'matches' => $matches,
         ]);
     }
 
     /**
      * Handle an incoming api request for summoner to riot api
+     * 
+     * @param object $request
+     * @return Illuminate\Support\Facades\Redirect
      */
     public function findInApi(Request $request)
     {
@@ -70,8 +72,10 @@ class SummonerController extends Controller
 
     /**
      * Handle deleting a summoner
+     * 
+     * @return Illuminate\Support\Facades\Redirect
      */
-    public function delete(Request $request)
+    public function delete()
     {
         $user = Auth::user();
 
@@ -82,6 +86,9 @@ class SummonerController extends Controller
 
     /**
      * Fetch matchlist from RiotApi
+     * 
+     * @param object $summoner
+     * @return array $matchList
      */
     public function getMatchList($summoner)
     {
@@ -90,15 +97,44 @@ class SummonerController extends Controller
         return $matchList;
     }
 
-
+    /**
+     * Get the details of a matchlist
+     * 
+     * @param array $matchList
+     * @return array $renderedMatches
+     */
     public function getMatchDetails($matchList)
     {
         $renderedMatches = array();
 
         foreach($matchList as $matchId){
-            $renderedMatches[] = RiotApi::getMatch($matchId);
+            $renderedMatches[] = $this->filterMatchParticipants(RiotApi::getMatch($matchId));
         }
 
         return $renderedMatches;
+    }
+
+    /**
+     * Filter match participants by current summoner id
+     * 
+     * @param object $match 
+     * @return object $match
+     */
+    public function filterMatchParticipants($match){
+        $user = Auth::user();
+        $summoner = Summoner::where('user_id', $user->id)->first();
+
+        $participants = $match->info->participants;
+
+        $mainParticipant = array_filter($participants, function($participant) use($summoner){
+            if(isset($participant->puuid)){
+                if($participant->puuid != $summoner->riot_puuid) return false;
+            }
+            return true;
+        });
+
+        $match->info->mainParticipant = reset($mainParticipant);
+
+        return $match;
     }
 }

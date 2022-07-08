@@ -10,7 +10,11 @@
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 bg-white border-b border-gray-200 flex justify-between items-center">
                     <h3 class="font-semibold text-lg text-gray-800 leading-tight">{{ $summoner->name }}</h3>
-                    <x-remove-summoner-form/>
+                    @if (Auth::user()->summoner)
+                        @if ($summoner->id === Auth::user()->summoner->id)
+                            <x-remove-summoner-form/>
+                        @endif
+                    @endif
                 </div>
                 <div>
                     <x-match-list :matches="$matches"/>

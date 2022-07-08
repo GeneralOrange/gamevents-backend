@@ -13,8 +13,6 @@ use RiotAPI\Base\Definitions\Region;
 
 class RiotApiServiceProvider extends ServiceProvider
 {
-    //$RIOT_API_REGION = env('RIOT_API_REGION');
-
     /**
      * Register services.
      *
@@ -25,10 +23,8 @@ class RiotApiServiceProvider extends ServiceProvider
         $this->app->bind('RiotApi', function ($app) {
             $api = new LeagueAPI([
                 LeagueAPI::SET_KEY            => env('RIOT_API_KEY'),
-                LeagueAPI::SET_REGION         => Region::EUROPE_WEST, // Replace it to $app->request->input('region')
+                LeagueAPI::SET_REGION         => Region::EUROPE_WEST,
             ]);
-
-            //dd(env('RIOT_API_KEY'));
 
             return $api;
         });

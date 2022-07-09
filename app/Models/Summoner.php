@@ -20,7 +20,9 @@ class Summoner extends Model
         'name',
         'riot_puuid',
         'riot_id',
-        'riot_account_id'
+        'riot_account_id',
+        'icon_id',
+        'level'
     ];
 
     public function user()

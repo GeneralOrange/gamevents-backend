@@ -23,7 +23,9 @@ class SummonerFactory extends Factory
             'slug' => $this->faker->slug(),
             'riot_puuid' => $this->faker->regexify('[A-Za-z0-9]{20}'),
             'riot_id' => $this->faker->regexify('[A-Za-z0-9]{20}'),
-            'riot_account_id' => $this->faker->regexify('[A-Za-z0-9]{20}')
+            'riot_account_id' => $this->faker->regexify('[A-Za-z0-9]{20}'),
+            'icon_id' => $this->faker->regexify('[A-Za-z0-9]{20}'),
+            'level' => $this->faker->integer()
         ];
     }
 }

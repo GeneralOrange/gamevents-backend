@@ -1,18 +1,15 @@
 <x-guest-layout>
-    <h1 class="font-bold text-6xl mb-10">Leaderboards!</h1>
+    <h1 class="font-bold text-6xl mb-5">Leaderboards week: {{ now()->format('W') }}</h1>
+    <p class="mb-10">{{ now()->parse('last Monday')->format('l jS') }} until {{ now()->parse('next Sunday')->format('l jS')}}</p>
     <div class="max-w-2xl">
         <table class="w-full mt-4">
             <tr>
-                <th class="p-2 align-middle text-center">ID</th>
                 <th class="p-2 align-middle text-center">Summoner</th>
                 <th class="p-2 align-middle text-center">User</th>
                 <th class="p-2 align-middle text-center">Links</th>
             </tr>
             @foreach ($summoners as $summoner)
                 <tr>
-                    <td class="p-2 align-middle text-center">
-                        {{ $summoner->id }}
-                    </td>
                     <td class="p-2 align-middle text-center">
                         {{ $summoner->name }}
                     </td>

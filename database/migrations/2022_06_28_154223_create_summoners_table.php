@@ -21,6 +21,8 @@ return new class extends Migration
             $table->string('riot_puuid')->unique();
             $table->string('riot_id')->unique();
             $table->string('riot_account_id')->unique();
+            $table->string('icon_id');
+            $table->string('level');
             $table->timestamps();
         });
     }

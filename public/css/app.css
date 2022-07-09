@@ -604,8 +604,8 @@ select {
 .relative {
   position: relative;
 }
-.bottom-3 {
-  bottom: 0.75rem;
+.top-3 {
+  top: 0.75rem;
 }
 .right-3 {
   right: 0.75rem;
@@ -618,9 +618,6 @@ select {
 }
 .left-0 {
   left: 0px;
-}
-.top-3 {
-  top: 0.75rem;
 }
 .z-0 {
   z-index: 0;
@@ -682,6 +679,9 @@ select {
 }
 .-mt-px {
   margin-top: -1px;
+}
+.mb-5 {
+  margin-bottom: 1.25rem;
 }
 .block {
   display: block;
@@ -907,10 +907,6 @@ select {
   --tw-bg-opacity: 1;
   background-color: rgb(255 255 255 / var(--tw-bg-opacity));
 }
-.bg-gray-300 {
-  --tw-bg-opacity: 1;
-  background-color: rgb(209 213 219 / var(--tw-bg-opacity));
-}
 .bg-gray-100 {
   --tw-bg-opacity: 1;
   background-color: rgb(243 244 246 / var(--tw-bg-opacity));
@@ -933,9 +929,6 @@ select {
 }
 .fill-current {
   fill: currentColor;
-}
-.p-4 {
-  padding: 1rem;
 }
 .p-2 {
   padding: 0.5rem;
@@ -1174,9 +1167,6 @@ select {
 }
 .ring-opacity-5 {
   --tw-ring-opacity: 0.05;
-}
-.filter {
-  filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);
 }
 .transition {
   transition-property: color, background-color, border-color, fill, stroke, opacity, box-shadow, transform, filter, -webkit-text-decoration-color, -webkit-backdrop-filter;

@@ -17,8 +17,12 @@ class SummonerController extends Controller
      */
     public function index()
     {
+        $summoners = Cache::remember("summoners.all", now()->addMinute(), function(){
+            return Summoner::with('user')->get();
+        });
+
         return view('leaderboard', [
-            'summoners' => Summoner::with('user')->get()
+            'summoners' => $summoners
         ]);
     }
 
@@ -30,9 +34,7 @@ class SummonerController extends Controller
      */
     public function show(Summoner $summoner)
     {
-        $summonerId = $summoner->id;
-
-        $matches = Cache::remember("summoner.{$summonerId}", now()->addMinutes(15), function() use($summoner){
+        $matches = Cache::remember("summoner.{$summoner->id}", now()->addMinutes(15), function() use($summoner){
             return $this->getMatchList($summoner);
         });
 
@@ -64,7 +66,9 @@ class SummonerController extends Controller
             'name' => $summonerFetch->name,
             'riot_puuid' => $summonerFetch->puuid,
             'riot_id' => $summonerFetch->id,
-            'riot_account_id' => $summonerFetch->accountId
+            'riot_account_id' => $summonerFetch->accountId,
+            'icon_id' => $summonerFetch->profileIconId,
+            'level' => $summonerFetch->summonerLevel
         ]);
     
         return redirect(RouteServiceProvider::HOME)->with('success', 'You succesfully added your Summoner!');
@@ -92,9 +96,7 @@ class SummonerController extends Controller
      */
     public function getMatchList($summoner)
     {
-        $matchList = $this->getMatchDetails(RiotApi::getMatchIdsByPUUID($summoner->riot_puuid));
-
-        return $matchList;
+        return $this->getMatchDetails(RiotApi::getMatchIdsByPUUID($summoner->riot_puuid));
     }
 
     /**
@@ -106,6 +108,7 @@ class SummonerController extends Controller
     public function getMatchDetails($matchList)
     {
         $renderedMatches = array();
+        $matchList = array_slice($matchList, 0, 5);
 
         foreach($matchList as $matchId){
             $renderedMatches[] = $this->filterMatchParticipants(RiotApi::getMatch($matchId));
@@ -136,5 +139,19 @@ class SummonerController extends Controller
         $match->info->mainParticipant = reset($mainParticipant);
 
         return $match;
+    }
+
+    public function getSummonerChampionMasteries($summonerId){
+        return RiotApi::getChampionMasteries($summonerId);
+    }
+
+    public function getTotalKillsPerMatchList($matchList){
+        $totalKills = 0;
+
+        foreach($matchList as $match){
+            $totalKills += $match->info->mainParticipant->kills;
+        }
+
+        return $totalKills;
     }
 }

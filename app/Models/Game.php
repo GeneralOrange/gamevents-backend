@@ -4,11 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\Game;
+use App\Models\Summoner;
 use App\Models\Team;
 use App\Models\GameStats;
 
-class Summoner extends Model
+class Game extends Model
 {
     use HasFactory;
 
@@ -19,23 +19,18 @@ class Summoner extends Model
      */
     protected $gaurded = [];
 
-    public function user()
+    public function summoner()
     {
-        return $this->belongsTo(User::class);
-    }
-
-    public function game()
-    {
-        return $this->belongsToMany(Game::class);
+        $this->belongsToMany(Summoner::class);
     }
 
     public function team()
     {
-        return $this->belongsToMany(Team::class);
+        $this->hasMany(Team::class);
     }
 
     public function gamestats()
     {
-        return $this->hasMany(GameStats::class);
+        $this->hasMany(GameStats::class);
     }
 }

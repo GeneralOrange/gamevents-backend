@@ -38,6 +38,8 @@ class SummonerController extends Controller
             return $this->getMatchList($summoner);
         });
 
+        //$matches = $this->getMatchList($summoner);
+
         return view('summoner.profile', [
             'summoner' => $summoner,
             'matches' => $matches,
@@ -96,22 +98,23 @@ class SummonerController extends Controller
      */
     public function getMatchList($summoner)
     {
-        return $this->getMatchDetails(RiotApi::getMatchIdsByPUUID($summoner->riot_puuid));
+        return $this->getMatchDetails(RiotApi::getMatchIdsByPUUID($summoner->riot_puuid), $summoner);
     }
 
     /**
      * Get the details of a matchlist
      * 
      * @param array $matchList
+     * @param object $summoner
      * @return array $renderedMatches
      */
-    public function getMatchDetails($matchList)
+    public function getMatchDetails($matchList, $summoner)
     {
         $renderedMatches = array();
         $matchList = array_slice($matchList, 0, 5);
 
         foreach($matchList as $matchId){
-            $renderedMatches[] = $this->filterMatchParticipants(RiotApi::getMatch($matchId));
+            $renderedMatches[] = $this->filterMatchParticipants(RiotApi::getMatch($matchId), $summoner);
         }
 
         return $renderedMatches;
@@ -120,13 +123,12 @@ class SummonerController extends Controller
     /**
      * Filter match participants by current summoner id
      * 
-     * @param object $match 
+     * @param object $match
+     * @param object $summoner
      * @return object $match
      */
-    public function filterMatchParticipants($match){
-        $user = Auth::user();
-        $summoner = Summoner::where('user_id', $user->id)->first();
-
+    public function filterMatchParticipants($match, $summoner){
+    
         $participants = $match->info->participants;
 
         $mainParticipant = array_filter($participants, function($participant) use($summoner){

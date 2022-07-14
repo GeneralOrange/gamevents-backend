@@ -3,11 +3,12 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Summoner;
 use App\Facades\RiotApi;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
+use App\Models\Summoner;
+use App\Models\Game;
 
 class SummonerController extends Controller
 {   
@@ -98,7 +99,26 @@ class SummonerController extends Controller
      */
     public function getMatchList($summoner)
     {
-        return $this->getMatchDetails(RiotApi::getMatchIdsByPUUID($summoner->riot_puuid), $summoner);
+        // $gameList = Game::whereHas('summoners', function($query) use($summoner)
+        // {
+        //     $query->where('id', $summoner->id);
+        // })->get();
+        $gameList = Game::all();
+        $matchIds = array_slice(RiotApi::getMatchIdsByPUUID($summoner->riot_puuid), 0, 5);
+        $remainingMatchIds = $matchIds;
+
+        if(!$gameList->isEmpty()){
+            $remainingMatchIds = array_filter($matchIds, function($matchId) use($gameList)
+            {
+                foreach($gameList as $game){
+                    if($game->riot_match_id === $matchId) return false;
+                }
+                return true;
+            });
+            
+        }
+        
+        return $this->getMatchDetails($remainingMatchIds, $summoner);
     }
 
     /**
@@ -111,10 +131,24 @@ class SummonerController extends Controller
     public function getMatchDetails($matchList, $summoner)
     {
         $renderedMatches = array();
-        $matchList = array_slice($matchList, 0, 5);
 
         foreach($matchList as $matchId){
-            $renderedMatches[] = $this->filterMatchParticipants(RiotApi::getMatch($matchId), $summoner);
+            $matchDetails = RiotApi::getMatch($matchId);
+
+            //dd($matchDetails);
+
+            $game = new Game;
+            $game->riot_match_id = $matchId;
+            $game->riot_id = $matchDetails->info->gameId;
+            $game->start = $matchDetails->info->gameStartTimestamp;
+            $game->riot_map_id = $matchDetails->info->mapId;
+            $game->creation = $matchDetails->info->gameCreation;
+            $game->duration = $matchDetails->info->gameDuration;
+            $game->save();
+
+            $game->summoners()->attach($summoner->id);
+
+            $renderedMatches[] = $this->filterMatchParticipants($matchDetails ,$summoner);
         }
 
         return $renderedMatches;

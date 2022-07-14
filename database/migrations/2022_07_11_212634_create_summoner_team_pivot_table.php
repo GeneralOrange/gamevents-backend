@@ -15,9 +15,9 @@ class CreateSummonerTeamPivotTable extends Migration
     {
         Schema::create('summoner_team', function (Blueprint $table) {
             $table->unsignedBigInteger('summoner_id')->index();
-            $table->foreign('summoner_id')->references('id')->on('summoner')->onDelete('cascade');
+            $table->foreign('summoner_id')->references('id')->on('summoners')->onDelete('cascade');
             $table->unsignedBigInteger('team_id')->index();
-            $table->foreign('team_id')->references('id')->on('team')->onDelete('cascade');
+            $table->foreign('team_id')->references('id')->on('teams')->onDelete('cascade');
             $table->primary(['summoner_id', 'team_id']);
         });
     }

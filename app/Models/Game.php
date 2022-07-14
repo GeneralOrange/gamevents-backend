@@ -19,18 +19,18 @@ class Game extends Model
      */
     protected $gaurded = [];
 
-    public function summoner()
+    public function summoners()
     {
-        $this->belongsToMany(Summoner::class);
+        return $this->belongsToMany(Summoner::class);
     }
 
-    public function team()
+    public function teams()
     {
-        $this->hasMany(Team::class);
+        return $this->hasMany(Team::class);
     }
 
     public function gamestats()
     {
-        $this->hasMany(GameStats::class);
+        return $this->hasMany(GameStats::class);
     }
 }

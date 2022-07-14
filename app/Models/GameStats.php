@@ -20,11 +20,11 @@ class GameStats extends Model
 
     public function summoner()
     {
-        $this->belongsTo(Summoner::class);
+        return $this->belongsTo(Summoner::class);
     }
 
     public function game()
     {
-        $this->belongsTo(Game::class);
+        return $this->belongsTo(Game::class);
     }
 }

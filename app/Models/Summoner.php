@@ -17,19 +17,19 @@ class Summoner extends Model
      *
      * @var array<int, string>
      */
-    protected $gaurded = [];
+    protected $guarded = ['id'];
 
     public function user()
     {
         return $this->belongsTo(User::class);
     }
 
-    public function game()
+    public function games()
     {
         return $this->belongsToMany(Game::class);
     }
 
-    public function team()
+    public function teams()
     {
         return $this->belongsToMany(Team::class);
     }

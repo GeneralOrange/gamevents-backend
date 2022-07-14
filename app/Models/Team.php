@@ -23,7 +23,7 @@ class Team extends Model
         $this->belongsTo(Game::class);
     }
 
-    public function summoner()
+    public function summoners()
     {
         $this->belongsToMany(Summoner::class);
     }

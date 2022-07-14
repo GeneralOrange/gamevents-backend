@@ -15,9 +15,9 @@ class CreateGameSummonerPivotTable extends Migration
     {
         Schema::create('game_summoner', function (Blueprint $table) {
             $table->unsignedBigInteger('game_id')->index();
-            $table->foreign('game_id')->references('id')->on('game')->onDelete('cascade');
+            $table->foreign('game_id')->references('id')->on('games')->onDelete('cascade');
             $table->unsignedBigInteger('summoner_id')->index();
-            $table->foreign('summoner_id')->references('id')->on('summoner')->onDelete('cascade');
+            $table->foreign('summoner_id')->references('id')->on('summoners')->onDelete('cascade');
             $table->primary(['game_id', 'summoner_id']);
         });
     }

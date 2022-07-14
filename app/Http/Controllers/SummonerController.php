@@ -39,7 +39,7 @@ class SummonerController extends Controller
         $matches = Cache::remember("summoner.{$summoner->id}", now()->addMinutes(15), function() use($summoner){
             return $this->initMatchList($summoner);
         });
-
+        
         return view('summoner.profile', [
             'summoner' => $summoner,
             'matches' => $matches,
@@ -132,7 +132,10 @@ class SummonerController extends Controller
             }
         }
         
-        return GameStats::where('summoner_id', $summoner->id)
+        return GameStats::select(['game_stats.*', 'games.creation as game_creation'])
+            ->where('summoner_id', $summoner->id)
+            ->join('games', 'game_stats.game_id', '=', 'games.id')
+            ->orderBy('games.creation', 'DESC')
             ->get();
     }
 

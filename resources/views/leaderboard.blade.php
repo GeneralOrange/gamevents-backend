@@ -6,6 +6,7 @@
             <tr>
                 <th class="p-2 align-middle text-center">Summoner</th>
                 <th class="p-2 align-middle text-center">User</th>
+                <th class="p-2 align-middle text-center">Total Kills</th>
                 <th class="p-2 align-middle text-center">Links</th>
             </tr>
             @foreach ($summoners as $summoner)
@@ -15,6 +16,13 @@
                     </td>
                     <td class="p-2 align-middle text-center">
                         {{ $summoner->user->name }}
+                    </td>
+                    <td class="p-2 align-middle text-center">
+                        <?php $totalKills = 0; ?>
+                        @foreach($summoner->gamestats as $gamestats)
+                            <?php $totalKills += $gamestats->kills; ?>
+                        @endforeach
+                        {{ $totalKills }}
                     </td>
                     <td class="p-2 align-middle text-center flex flex-col gap-1">
                         <a href="/summoner/{{ $summoner->slug }}" class="rounded-xl bg-gray-100 text-gray border-2 border-white p-2 hover:text-white hover:bg-gray-700">

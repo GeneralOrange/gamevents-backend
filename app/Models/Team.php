@@ -16,15 +16,15 @@ class Team extends Model
      *
      * @var array<int, string>
      */
-    protected $gaurded = [];
+    protected $guarded = ['id'];
 
     public function game()
     {
-        $this->belongsTo(Game::class);
+        return $this->belongsTo(Game::class);
     }
 
     public function summoners()
     {
-        $this->belongsToMany(Summoner::class);
+        return $this->belongsToMany(Summoner::class);
     }
 }

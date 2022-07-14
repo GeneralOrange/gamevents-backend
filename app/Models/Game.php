@@ -17,7 +17,7 @@ class Game extends Model
      *
      * @var array<int, string>
      */
-    protected $gaurded = [];
+    protected $guarded = ['id'];
 
     public function summoners()
     {

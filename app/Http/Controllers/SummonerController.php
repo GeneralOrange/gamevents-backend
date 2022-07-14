@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use App\Models\Summoner;
 use App\Models\Game;
+use App\Models\GameStats;
 
 class SummonerController extends Controller
 {   
@@ -18,8 +19,8 @@ class SummonerController extends Controller
      */
     public function index()
     {
-        $summoners = Cache::remember("summoners.all", now()->addMinute(), function(){
-            return Summoner::with('user')->get();
+        $summoners = Cache::remember("summoners.all", now()->addSeconds(10), function(){
+            return Summoner::with('gamestats')->get();
         });
 
         return view('leaderboard', [
@@ -36,10 +37,8 @@ class SummonerController extends Controller
     public function show(Summoner $summoner)
     {
         $matches = Cache::remember("summoner.{$summoner->id}", now()->addMinutes(15), function() use($summoner){
-            return $this->getMatchList($summoner);
+            return $this->initMatchList($summoner);
         });
-
-        //$matches = $this->getMatchList($summoner);
 
         return view('summoner.profile', [
             'summoner' => $summoner,
@@ -97,28 +96,25 @@ class SummonerController extends Controller
      * @param object $summoner
      * @return array $matchList
      */
-    public function getMatchList($summoner)
+    public function initMatchList($summoner)
     {
-        // $gameList = Game::whereHas('summoners', function($query) use($summoner)
-        // {
-        //     $query->where('id', $summoner->id);
-        // })->get();
-        $gameList = Game::all();
-        $matchIds = array_slice(RiotApi::getMatchIdsByPUUID($summoner->riot_puuid), 0, 5);
-        $remainingMatchIds = $matchIds;
+        $gameList = Game::whereHas('summoners', function($query) use($summoner)
+        {
+            $query->where('id', $summoner->id);
+        })->get();
+
+        $matchIds = RiotApi::getMatchIdsByPUUID($summoner->riot_puuid);
 
         if(!$gameList->isEmpty()){
-            $remainingMatchIds = array_filter($matchIds, function($matchId) use($gameList)
-            {
-                foreach($gameList as $game){
-                    if($game->riot_match_id === $matchId) return false;
+            foreach($gameList as $game){
+                $search = array_search($game->riot_match_id, $matchIds);
+                if($search !== false){
+                    unset($matchIds[$search]);
                 }
-                return true;
-            });
-            
+            }
         }
         
-        return $this->getMatchDetails($remainingMatchIds, $summoner);
+        return $this->getMatchList($matchIds, $summoner);
     }
 
     /**
@@ -128,15 +124,30 @@ class SummonerController extends Controller
      * @param object $summoner
      * @return array $renderedMatches
      */
-    public function getMatchDetails($matchList, $summoner)
+    public function getMatchList($matchList, $summoner)
     {
-        $renderedMatches = array();
+        if(count($matchList) >= 1){
+            foreach($matchList as $matchId){
+                $this->saveMatch($matchId, $summoner);
+            }
+        }
+        
+        return GameStats::where('summoner_id', $summoner->id)
+            ->get();
+    }
 
-        foreach($matchList as $matchId){
-            $matchDetails = RiotApi::getMatch($matchId);
+    public function fetchMatchDetails($matchId)
+    {
+        return RiotApi::getMatch($matchId);
+    }
 
-            //dd($matchDetails);
+    public function saveMatch($matchId, $summoner)
+    {
+        $matchDetails = $this->filterMatchParticipants($this->fetchMatchDetails($matchId), $summoner);
 
+        $game = Game::where('riot_match_id', $matchId)->first();
+        
+        if(!$game){
             $game = new Game;
             $game->riot_match_id = $matchId;
             $game->riot_id = $matchDetails->info->gameId;
@@ -145,13 +156,28 @@ class SummonerController extends Controller
             $game->creation = $matchDetails->info->gameCreation;
             $game->duration = $matchDetails->info->gameDuration;
             $game->save();
-
-            $game->summoners()->attach($summoner->id);
-
-            $renderedMatches[] = $this->filterMatchParticipants($matchDetails ,$summoner);
         }
 
-        return $renderedMatches;
+        $game->summoners()->attach($summoner->id);
+
+        GameStats::create([
+            'game_id' => $game->id,
+            'summoner_id' => $summoner->id,
+            'win' => $matchDetails->info->mainParticipant->win,
+            'kills' => $matchDetails->info->mainParticipant->kills,
+            'assists' => $matchDetails->info->mainParticipant->assists,
+            'deaths' => $matchDetails->info->mainParticipant->deaths,
+            'baron_kills' => $matchDetails->info->mainParticipant->baronKills,
+            'lane' => $matchDetails->info->mainParticipant->lane,
+            'champion_name' => $matchDetails->info->mainParticipant->championName,
+            'double_kills' => $matchDetails->info->mainParticipant->doubleKills,
+            'triple_kills' => $matchDetails->info->mainParticipant->tripleKills,
+            'quadra_kills' => $matchDetails->info->mainParticipant->quadraKills,
+            'penta_kills' => $matchDetails->info->mainParticipant->pentaKills,
+            'magic_damage' => $matchDetails->info->mainParticipant->magicDamageDealt,
+            'physical_damage' => $matchDetails->info->mainParticipant->physicalDamageDealt,
+            'true_damage' => $matchDetails->info->mainParticipant->trueDamageDealt,
+        ]);
     }
 
     /**
@@ -181,7 +207,7 @@ class SummonerController extends Controller
         return RiotApi::getChampionMasteries($summonerId);
     }
 
-    public function getTotalKillsPerMatchList($matchList){
+    public function getTotalKills($matchList){
         $totalKills = 0;
 
         foreach($matchList as $match){

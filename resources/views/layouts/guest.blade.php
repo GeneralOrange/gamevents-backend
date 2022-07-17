@@ -21,5 +21,21 @@
         <div class="font-sans text-gray-900 antialiased flex flex-col items-center justify-center w-full p-7">
             {{ $slot }}
         </div>
+        <div class="background fixed left-0 top-0 w-full">
+
+        </div>
+
+        @include('layouts.footer')
     </body>
 </html>
+
+<style>
+    .background {
+        background-repeat: no-repeat;
+        background-image: url('/img/background_league.jpg');
+        background-size: cover;
+        height: 100%;
+        z-index: -1;
+        opacity: .05;
+    }
+</style>

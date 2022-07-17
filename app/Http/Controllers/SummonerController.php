@@ -18,9 +18,14 @@ class SummonerController extends Controller
      * @return \Illuminate\View\View
      */
     public function index()
-    {
+    {   
         $summoners = Cache::remember("summoners.all", now()->addSeconds(10), function(){
-            return Summoner::with('gamestats')->get();
+            return Summoner::with('gamestats')
+                ->get()
+                ->sortByDesc(function($summoner)
+                {
+                    return $summoner->gamestats()->sum('kills');
+                });
         });
 
         return view('leaderboard', [
@@ -132,11 +137,12 @@ class SummonerController extends Controller
             }
         }
         
-        return GameStats::select(['game_stats.*', 'games.creation as game_creation'])
-            ->where('summoner_id', $summoner->id)
-            ->join('games', 'game_stats.game_id', '=', 'games.id')
-            ->orderBy('games.creation', 'DESC')
-            ->get();
+        return GameStats::where('summoner_id', $summoner->id)
+            ->get()
+            ->sortByDesc(function($gamestats)
+            {
+                return $gamestats->game->creation;
+            });
     }
 
     public function fetchMatchDetails($matchId)

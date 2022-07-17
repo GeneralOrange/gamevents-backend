@@ -16,17 +16,40 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        User::create([
+        $erik = User::create([
             'name' => 'Erik',
             'email' => 'erik@erik.com',
             'password' => bcrypt('password')
         ]);
         
-        User::create([
+        $dylan = User::create([
             'name' => 'Dylan',
             'email' => 'dylan@dylan.com',
             'password' => bcrypt('password')
         ]);
-        //Summoner::create();
+
+        $jarno = User::create([
+            'name' => 'Jarno',
+            'email' => 'jarno@jarno.com',
+            'password' => bcrypt('password')
+        ]);
+
+        Summoner::create([
+            'user_id' => $erik->id,
+            'name' => 'General Orange',
+            'slug' => 'general-orange'
+        ]);
+
+        Summoner::create([
+            'user_id' => $dylan->id,
+            'name' => 'Xîght',
+            'slug' => 'xight'
+        ]);
+
+        Summoner::create([
+            'user_id' => $jarno->id,
+            'name' => 'Mr xerioNN',
+            'slug' => 'mr-xerionn'
+        ]);
     }
 }

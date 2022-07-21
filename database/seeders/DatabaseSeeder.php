@@ -34,22 +34,22 @@ class DatabaseSeeder extends Seeder
             'password' => bcrypt('password')
         ]);
 
-        Summoner::create([
-            'user_id' => $erik->id,
-            'name' => 'General Orange',
-            'slug' => 'general-orange'
-        ]);
+        // Summoner::create([
+        //     'user_id' => $erik->id,
+        //     'name' => 'General Orange',
+        //     'slug' => 'general-orange'
+        // ]);
 
-        Summoner::create([
-            'user_id' => $dylan->id,
-            'name' => 'Xîght',
-            'slug' => 'xight'
-        ]);
+        // Summoner::create([
+        //     'user_id' => $dylan->id,
+        //     'name' => 'Xîght',
+        //     'slug' => 'xight'
+        // ]);
 
-        Summoner::create([
-            'user_id' => $jarno->id,
-            'name' => 'Mr xerioNN',
-            'slug' => 'mr-xerionn'
-        ]);
+        // Summoner::create([
+        //     'user_id' => $jarno->id,
+        //     'name' => 'Mr xerioNN',
+        //     'slug' => 'mr-xerionn'
+        // ]);
     }
 }

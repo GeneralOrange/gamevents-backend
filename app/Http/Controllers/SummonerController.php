@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Cache;
 use App\Models\Summoner;
 use App\Models\Game;
 use App\Models\GameStats;
+use Illuminate\Support\Carbon;
 
 class SummonerController extends Controller
 {   
@@ -160,10 +161,10 @@ class SummonerController extends Controller
             $game = new Game;
             $game->riot_match_id = $matchId;
             $game->riot_id = $matchDetails->info->gameId;
-            $game->start = $matchDetails->info->gameStartTimestamp;
             $game->riot_map_id = $matchDetails->info->mapId;
-            $game->creation = $matchDetails->info->gameCreation;
-            $game->duration = $matchDetails->info->gameDuration;
+            $game->start = Carbon::createFromTimestampMs($matchDetails->info->gameStartTimestamp)->toDateTimeString();
+            $game->creation = Carbon::createFromTimestampMs($matchDetails->info->gameCreation)->toDateTimeString();
+            $game->duration = Carbon::parse($matchDetails->info->gameDuration)->format('H:i:s');
             $game->save();
         }
 

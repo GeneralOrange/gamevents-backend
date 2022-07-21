@@ -18,9 +18,9 @@ return new class extends Migration
             $table->string('riot_match_id')->unique();
             $table->string('riot_id')->unique();
             $table->integer('riot_map_id');
-            $table->bigInteger('start');
-            $table->bigInteger('creation');
-            $table->bigInteger('duration');
+            $table->timestamp('start');
+            $table->timestamp('creation');
+            $table->time('duration');
             $table->timestamps();
         });
     }

@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use App\Models\Summoner;
 use App\Models\Team;
 use App\Models\GameStats;
+use Illuminate\Support\Carbon;
 
 class Game extends Model
 {
@@ -32,5 +33,10 @@ class Game extends Model
     public function gamestats()
     {
         return $this->hasMany(GameStats::class);
+    }
+
+    public function scopeThisweek($query)
+    {
+        return $query->where('creation', '>=', Carbon::now()->parse('last Monday'));
     }
 }

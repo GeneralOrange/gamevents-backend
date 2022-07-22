@@ -29,6 +29,13 @@ class SummonerController extends Controller
                 });
         });
 
+        // $summoners = Summoner::with('gamestats')
+        //         ->get()
+        //         ->sortByDesc(function($summoner)
+        //         {
+        //             return $summoner->gamestats()->sum('kills');
+        //         });
+
         return view('leaderboard', [
             'summoners' => $summoners
         ]);
@@ -42,9 +49,11 @@ class SummonerController extends Controller
      */
     public function show(Summoner $summoner)
     {
-        $matches = Cache::remember("summoner.{$summoner->id}", now()->addMinutes(15), function() use($summoner){
+        $matches = Cache::remember("summoner.{$summoner->id}", now()->addMinute(), function() use($summoner){
             return $this->initMatchList($summoner);
         });
+
+        //$matches = $this->initMatchList($summoner);
         
         return view('summoner.profile', [
             'summoner' => $summoner,
@@ -107,7 +116,8 @@ class SummonerController extends Controller
         $gameList = Game::whereHas('summoners', function($query) use($summoner)
         {
             $query->where('id', $summoner->id);
-        })->get();
+        })
+        ->get();
 
         $matchIds = RiotApi::getMatchIdsByPUUID($summoner->riot_puuid);
 
@@ -139,6 +149,10 @@ class SummonerController extends Controller
         }
         
         return GameStats::where('summoner_id', $summoner->id)
+            ->whereHas('game', function($query)
+            {
+                $query->thisweek();
+            })
             ->get()
             ->sortByDesc(function($gamestats)
             {

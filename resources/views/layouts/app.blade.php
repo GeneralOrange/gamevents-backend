@@ -33,6 +33,21 @@
             </main>
         </div>
         @include('layouts.footer')
+        <div class="background fixed left-0 top-0 w-full">
+
+        </div>
     </body>
     <x-flash/>
 </html>
+
+<style>
+    .background {
+        background-repeat: no-repeat;
+        background-image: url('/img/teemo.png');
+        background-size: 45%;
+        background-position: 0 100%;
+        height: 100%;
+        z-index: -1;
+        opacity: .05;
+    }
+</style>
